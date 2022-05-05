@@ -1,22 +1,6 @@
-# 3. Operação de atualizar Banco de Dados 
-# produtor_atualiza_status_banco
-# fila_status_banco
-# consumidor_atualiza_status_banco
-
-# 3.1. Dispara uma solicitação para atualizar o status do repositório no BD (9)
-# 3.2. Enfilera pedido de atualização do status do repositório no BD (10) (produtor)
-# 3.3. Consome da fila de status do BD (11) (consumidor)
-# 3.4. Repositório com status atualizado para clonado no BD (12)
-
-# 4. Operações de Análises dos Commits
-# produto_analisa_commits
-# fila_analisa_commits
-# consumidor_analisa_commits
-
-# 4.1. Dispara uma solicitação para analisar os commits do repositório (13)
-# 4.2. Enfilera pedido de análise de commits do repositório (14) (produtor)
-# 4.3. Consome da fila de análise de commits (15) (consumidor)
-# 4.4. Repositório analisado com sucesso (16)
+# Consumidor e Produtor
+# Consumidor da fila 'fila_status_banco'
+# Produtor na fila 'fila_analise_commits'
 
 import pika
  

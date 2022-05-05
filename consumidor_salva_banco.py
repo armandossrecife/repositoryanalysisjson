@@ -2,26 +2,6 @@
 # Consumidor da fila 'fila_banco'
 # Produtor na fila 'fila_repositorio_local'
 
-# 1. Operacões no Banco de Dados
-# produtor_salva_banco
-# fila_banco
-# consumidor_salva_banco
-
-# 1.1. Dispara uma solicitação para salvar o repositório no BD (1)
-# 1.2. Enfilera solicitação na fila (2) (produtor)
-# 1.3. Consome da fila de operações do BD (3) (consumidor)
-# 1.4. Repositório salvo no BD (4)
-
-# 2. Operações de clonagem do repositório
-# produtor_clona_repositorio
-# fila_repositorio_local
-# consumidor_clona_repositorio
-
-# 2.1. Dispara uma solicitação para clonar o repositório no sistema de arquivo local (5)
-# 2.2. Enfilera pedido de clonagem do repositório (6) (produtor)
-# 2.3. Consome da fila de operações de clonagem (7) (consumidor)
-# 2.4. Repositório clonado no sistema de arquivos local (8)
-
 import pika
 from git import Repo
 import os
