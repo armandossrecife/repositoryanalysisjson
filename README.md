@@ -14,31 +14,31 @@ Dispara mensgem para a fila_banco (pedido para salvar o repositório no BD)
 $ python3 produtor_salva_banco.py
 ```
 
-Consumidor da fila_banco e produtor da fila_repositorio_local - (consumidor e produtor)
+Consumidor da fila_banco e produtor da fila_repositorio_local - atualiza no banco e solicta clonagem - (consumidor e produtor)
 ```
 # Shell 2
 $ python3 consumidor_salva_banco.py 
 ```
 
-Consumidor da fila_repositorio_local e produtor da fila_status_banco - (consumidor e produtor)
+Consumidor da fila_repositorio_local e produtor da fila_status_banco - faz a clonagem e solicita atualização do BD - (consumidor e produtor)
 ```
 # Shell 3
 $ python3 consumidor_clona_repositorio.py
 ```
 
-Consumidor da fila_status_banco e produtor da fila_analise_commits - (consumidor e produtor)
+Consumidor da fila_status_banco e produtor da fila_analise_commits - atualiza o BD e solicita análise do repositório - (consumidor e produtor)
 ```
 # Shell 4
 $ python3 consumidor_atualiza_status_banco.py
 ```
 
-Consumidor da fila_analise_commits e produtor da fila_operacoes_arquivos_local - (consumidor e produtor)
+Consumidor da fila_analise_commits e produtor da fila_operacoes_arquivos_local - analisa os commits do repositório e solicita gerar JSON - (consumidor e produtor)
 ```
 # Shell 5
 $ python3 consumidor_analisa_commits.py
 ```
 
-Consumidor da fila_arquivos_local
+Consumidor da fila_arquivos_local - Gera o arquivo JSON com os resultados da análise do repositório.
 ```
 # Shell 6
 $ python3 consumidor_gera_json.py 
