@@ -72,7 +72,7 @@ def clone_callback(ch, method, properties, body):
         except Exception as ex:
             print(f'Erro: {str(ex)}')     
  
-channel_to_clone.basic_consume('cloning', clone_callback, auto_ack=True)
+channel_to_clone.basic_consume(my_fila1, clone_callback, auto_ack=True)
  
 print(' [*] Waiting for messages to cloning. To exit press CTRL+C')
 channel_to_clone.start_consuming()

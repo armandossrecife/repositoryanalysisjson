@@ -59,14 +59,12 @@ def salva_no_banco_callback(ch, method, properties, body):
             if not os.path.isdir(repo_dir):
                 try:
                     # 1.4. Repositório salvo no BD (4)
-                    print('Operação de salvar o {repositorio} no Banco')
+                    print(f'Operação de salvar o {repositorio} no Banco')
                     print(f'Repositório {nome_repositorio} salvo no BD com sucesso!')
                     # 2.1. Dispara uma solicitação para clonar o repositório no sistema de arquivo local (5)
                     msg_clona_repositorio(canal=channel_to_clone, fila=my_fila2, usuario=user, repositorio=repositorio)
                 except Exception as ex:
-                        print(f'Erro: {str(ex)}')
-                else:
-                    print(f'{str(ex)}')
+                    print(f'Erro: {str(ex)}')
             else:
                 print(f'O repositório {repositorio} já foi clonado no diretório {repo_dir}')
         except Exception as ex:
@@ -74,5 +72,5 @@ def salva_no_banco_callback(ch, method, properties, body):
  
 channel_salva_banco.basic_consume(my_fila1, salva_no_banco_callback, auto_ack=True)
  
-print(' [*] Waiting for messages to save repository. To exit press CTRL+C')
+print(' [*] Waiting for messages to save repository in BD. To exit press CTRL+C')
 channel_salva_banco.start_consuming()
