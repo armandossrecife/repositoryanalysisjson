@@ -1,5 +1,5 @@
 # repositoryanalysis
-Repository Analysis
+Repository Analysis - Permite a análise assíncrona de vários repositórios git de forma "simultânea"
 
 Dado um repositório git o mesmo é salvo em banco e logo depois é clonado para permitir uma análise local. Ao final da análise do repositório gera um arquivo JSON com os resultados da análise.
 
