@@ -4,7 +4,14 @@ Repository Analysis
 Dado um repositório git o mesmo é salvo em banco e logo depois é clonado para permitir uma análise local. Ao final da análise do repositório gera um arquivo JSON com os resultados da análise.
 
 ## Para rodar o RabbitMQ com o docker, basta rodar a seguinte linha de comando:
+```
 $ docker run --rm -p 5672:5672 -p 8080:15672 rabbitmq:3-management
+```
+
+### Para visualizar as mensagens de uma fila no RabbitMQ:
+```
+$ rabbitmqadmin get queue=fila_operacoes_arquivos_local count=10
+```
 
 ## Executando os produtores e consumidores
 
