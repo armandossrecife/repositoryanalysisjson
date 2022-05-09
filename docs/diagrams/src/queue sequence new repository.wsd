@@ -1,0 +1,65 @@
+@startuml
+actor       User as user
+boundary    Dashboad as principal
+boundary    Repository_UI as telaRepositorio
+control     Control.Main as main
+control     Produtor_Salva_Banco as utilidades
+control     Consumidor_Salva_Banco as consumidor_banco
+control     Consumidor_Clona_Repositorio as consumidor_clona
+control     Consumidor_Atualiza_Banco as consumidor_atualiza
+control     Consumidor_Analisa_Repositorio as consumidor_analisa
+control     Consumidor_Gera_JSON as consumidor_gera_json
+entity      Repositories  as repositorio
+queue       Queue.Repositories as fila_repositorio_local
+queue       Queue.DataBase as fila_banco
+queue       Queue.Status.DataBase as fila_status_banco
+queue       Queue.Analisa.Commits as fila_analise_commits
+queue       Queue.Operacoes.Arquivo as fila_operacoes_arquivos_local
+database    Database as banco 
+
+user -> principal : select option new
+principal -> main : new repository
+main -> telaRepositorio : show UI 
+telaRepositorio -> main : new repository
+main -> main : new
+main -> main : data validation
+main -> repositorio : check repository
+repositorio -> banco : query repositories
+banco --> repositorio : reply
+repositorio --> main : reply
+main -> main : enqueue repository
+    group Produtor A
+    main -> utilidades : Dispara uma solicitação para \n salvar o repositório no BD
+    utilidades -> fila_banco : enqueue salvar no banco
+    utilidades -> main : go back to main process
+    end
+    group Consumidor A
+    consumidor_banco -> fila_banco : consome solicitacao do banco
+    consumidor_banco -> fila_repositorio_local : enqueue clonar repositorio
+    consumidor_banco -> main : go back to main process
+    end
+    main -> repositorio : new repository
+    repositorio -> banco : save repository
+    banco --> repositorio : reply
+    repositorio --> main : reply
+    main --> principal : repository saved
+    group Consumidor B
+    consumidor_clona -> fila_repositorio_local : consome solicitacao de clonar repositorio
+    consumidor_clona -> fila_status_banco : enqueue atualizar status banco
+    consumidor_clona -> main : go back to main process
+    end
+    group Consumidor C
+    consumidor_atualiza -> fila_status_banco : consome solicitacao de \n atualizar status no banco
+    consumidor_atualiza -> fila_analise_commits : enqueue analisar repositorio
+    consumidor_atualiza -> main : go back to main process
+    end
+    group Consumidor D
+    consumidor_analisa -> fila_analise_commits : consome solicitacao de \n analise de repositorio
+    consumidor_analisa -> fila_operacoes_arquivos_local : enqueue gerar JSON
+    consumidor_analisa -> main : go back to main process
+    end
+    group Consumidor E
+    consumidor_gera_json -> fila_operacoes_arquivos_local : consome solicitacao de \n gerar JSON
+    consumidor_analisa -> main : go back to main process
+    end
+@enduml

@@ -5,6 +5,7 @@
 import pika
 from git import Repo
 import os
+import utils as util
  
 rabbitmq_broker_host = 'localhost'
 my_fila1 = 'fila_banco'
@@ -17,38 +18,31 @@ channel_salva_banco.queue_declare(queue=my_fila1, durable=True)
 channel_to_clone = connection.channel() 
 channel_to_clone.queue_declare(queue=my_fila2, durable=True)
 
-# 2.2. Enfilera pedido de clonagem do repositório (6) (produtor)
-def msg_clona_repositorio(canal=channel_to_clone, fila=my_fila2, usuario='', repositorio=''):
-    print(f'Conectando ao canal channel_to_clone na fila {fila}')
-    print(f'Enviando o pedido de clonagem do repositório {repositorio}')
-    conteudo = 'user=' + usuario + ',' + 'repository=' + repositorio
-    canal.basic_publish(exchange='', routing_key=fila, body=conteudo)
-
 # 1.3. Consome da fila de operações do BD (3) (consumidor)
 def salva_no_banco_callback(ch, method, properties, body):
     body = body.decode('utf-8')
     if 'user' in body:
         try:
-            str_temp = body.split(',')
-            user = str_temp[0].split('=')[1]
-            repositorio = str_temp[1].split('=')[1]       
-            separa_ponto = repositorio.split('.')
-            nome_repositorio_temp = separa_ponto[1]
-            nome_repositorio = nome_repositorio_temp.split('/')[-1]
-            repo_dir = nome_repositorio
-            if not os.path.isdir(repo_dir):
+            user, repositorio, nome_repositorio, status = util.parser_body(body)
+            if not os.path.isdir(nome_repositorio):
                 try:
                     # 1.4. Repositório salvo no BD (4)
-                    print(f'Operação de salvar o {repositorio} no Banco')
-                    print(f'Repositório {nome_repositorio} salvo no BD com sucesso!')
+                    util.salvar_no_banco(user, repositorio, nome_repositorio, status)
                     # 2.1. Dispara uma solicitação para clonar o repositório no sistema de arquivo local (5)
-                    msg_clona_repositorio(canal=channel_to_clone, fila=my_fila2, usuario=user, repositorio=repositorio)
+                    msg_clona_repositorio(canal=channel_to_clone, fila=my_fila2, usuario=user, repositorio=repositorio, status='Clonado')
                 except Exception as ex:
                     print(f'Erro: {str(ex)}')
             else:
-                print(f'O repositório {repositorio} já foi clonado no diretório {repo_dir}')
+                print(f'O repositório {repositorio} já foi clonado no diretório {nome_repositorio}')
         except Exception as ex:
             print(f'Erro: {str(ex)}')     
+
+# 2.2. Enfilera pedido de clonagem do repositório (6) (produtor)
+def msg_clona_repositorio(canal=channel_to_clone, fila=my_fila2, usuario='', repositorio='', status=''):
+    print(f'Conectando ao canal channel_to_clone na fila {fila}')
+    print(f'Enviando o pedido de clonagem do repositório {repositorio} do usuário {usuario}')
+    conteudo = 'user=' + usuario + ',' + 'repository=' + repositorio + ',' + 'status='+status
+    canal.basic_publish(exchange='', routing_key=fila, body=conteudo)
  
 channel_salva_banco.basic_consume(my_fila1, salva_no_banco_callback, auto_ack=True)
  

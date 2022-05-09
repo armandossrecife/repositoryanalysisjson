@@ -1,10 +1,6 @@
 # Consumidor da fila 'fila_operacoes_arquivos_local'
-
 import pika
-from git import Repo
-import os
-from tqdm import tqdm
-import time
+import utils as util
  
 rabbitmq_broker_host = 'localhost'
 my_fila1 = 'fila_operacoes_arquivos_local'
@@ -17,20 +13,8 @@ def generate_file_callback(ch, method, properties, body):
     body = body.decode('utf-8')
     if 'user' in body:
         try:
-            str_temp = body.split(',')
-            user = str_temp[0].split('=')[1]
-            repositorio = str_temp[1].split('=')[1]
-            print(f'Gerar o arquivo JSON do {repositorio}, na area do usuario: {user}')
-            git_url = repositorio        
-            separa_ponto = git_url.split('.')
-            nome_repositorio_temp = separa_ponto[1]
-            nome_repositorio = nome_repositorio_temp.split('/')[-1]
-            try:
-                for i in tqdm(range(3)):
-                    time.sleep(1)
-                print(f'Arquivo JSON Repositório {git_url} gerado com sucesso!')
-            except Exception as ex:
-                print(f'Erro: {str(ex)}')
+            user, repositorio, nome_repositorio, status = util.parser_body(body)
+            util.gerar_arquivos_json(user, repositorio)
         except Exception as ex:
             print(f'Erro: {str(ex)}')     
  
