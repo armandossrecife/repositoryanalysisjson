@@ -8,6 +8,22 @@ Dado um repositório git o mesmo é salvo em banco e logo depois é clonado para
 $ docker run --rm -p 5672:5672 -p 8080:15672 rabbitmq:3-management
 ```
 
+O servidor de mensageria do RabbitMQ deverá rodar em http://localhost:8080
+
+Entre com o usuário guest/guest
+
+Crie as seguintes filas: 
+
+fila_banco - Fila que organiza as solicitações para salvar as informações dos repositórios no banco
+
+fila_repositorio_local - Fila que organiza as solicitações para clonar os repositórios
+
+fila_analise_commits - Fila que organiza as solicitações de análise dos repositórios
+
+fila_operacoes_arquivo_local - Fila que organiza a geração de arquivos JSON contendo os resultados das análises de cada repositório
+
+fila_status_banco - Fila que organiza as solicitações de atualização de status de cada repositório no banco
+
 ### Para visualizar as mensagens de uma fila no RabbitMQ:
 ```
 $ rabbitmqadmin get queue=fila_operacoes_arquivos_local count=10
